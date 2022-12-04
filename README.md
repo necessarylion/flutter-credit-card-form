@@ -2,8 +2,8 @@
 
 ### Preview
 
-<img width="300" src="preview-dark.png" />
-<img width="300" src="preview-light.png" />
+<img width="300" src="https://raw.githubusercontent.com/necessarylion/flutter-credit-card-form/master/preview-dark.png" />
+<img width="300" src="https://raw.githubusercontent.com/necessarylion/flutter-credit-card-form/master/preview-light.png" />
 
 ### Usage 
 
