@@ -1,6 +1,6 @@
 name: credit_card_form
 description: Flutter Credit/Debit Card Form.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/necessarylion/flutter-credit-card-form
 
 environment:
