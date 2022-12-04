@@ -1,9 +1,21 @@
 part of credit_card_form;
 
 class CreditCardForm extends StatefulWidget {
+  final String? cardNumberLabel;
+  final String? cardHolderLabel;
+  final String? expiredDateLabel;
+  final String? cvcLabel;
   final CreditCardTheme? theme;
   final Function(CreditCardResult) onChanged;
-  const CreditCardForm({super.key, this.theme, required this.onChanged});
+  const CreditCardForm({
+    super.key,
+    this.theme,
+    required this.onChanged,
+    this.cardNumberLabel,
+    this.cardHolderLabel,
+    this.expiredDateLabel,
+    this.cvcLabel,
+  });
 
   @override
   State<CreditCardForm> createState() => _CreditCardFormState();
@@ -51,7 +63,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
         children: [
           textInput(
             controller: controllers['card'],
-            label: 'Card number',
+            label: widget.cardNumberLabel ?? 'Card number',
             key: 'card',
             bottom: 1,
             formatters: [
@@ -79,7 +91,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
             ),
           ),
           textInput(
-            label: 'Card holder name',
+            label: widget.cardHolderLabel ?? 'Card holder name',
             controller: controllers['card_holder_name'],
             key: 'card_holder_name',
             bottom: 1,
@@ -92,7 +104,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
             children: [
               Expanded(
                 child: textInput(
-                  label: 'MM/YY',
+                  label: widget.expiredDateLabel ?? 'MM/YY',
                   right: 1,
                   key: 'expired_date',
                   onChanged: (val) {
@@ -104,7 +116,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
               ),
               Expanded(
                 child: textInput(
-                  label: 'CVC',
+                  label: widget.cvcLabel ?? 'CVC',
                   key: 'cvc',
                   controller: controllers['cvc'],
                   password: true,
