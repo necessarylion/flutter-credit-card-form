@@ -5,6 +5,7 @@ class CreditCardForm extends StatefulWidget {
   final String? cardHolderLabel;
   final String? expiredDateLabel;
   final String? cvcLabel;
+  final double fontSize;
   final CreditCardTheme? theme;
   final Function(CreditCardResult) onChanged;
   const CreditCardForm({
@@ -15,6 +16,7 @@ class CreditCardForm extends StatefulWidget {
     this.cardHolderLabel,
     this.expiredDateLabel,
     this.cvcLabel,
+    this.fontSize = 16,
   });
 
   @override
@@ -200,7 +202,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
         controller: controller,
         style: TextStyle(
           color: theme.textColor,
-          fontSize: 16,
+          fontSize: widget.fontSize,
         ),
         onChanged: (value) {
           setState(() {
@@ -220,7 +222,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
           hintText: label,
           hintStyle: TextStyle(
             color: theme.labelColor,
-            fontSize: 16,
+            fontSize: widget.fontSize,
           ),
         ),
       ),
