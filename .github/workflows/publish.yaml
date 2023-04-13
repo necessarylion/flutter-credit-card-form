@@ -17,3 +17,5 @@ jobs:
           credentialJson: ${{ secrets.DART_CREDENTIAL }}
           flutter: true
           skipTests: true
+          force: true
+          suppressBuildRunner: true
