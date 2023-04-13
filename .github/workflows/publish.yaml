@@ -13,9 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        uses: sakebook/actions-flutter-pub-publisher@v1.3.1
         with:
           credential: ${{ secrets.DART_CREDENTIAL }}
           flutter_package: true
           skip_test: true
-          dry_run: true
+          dry_run: false
