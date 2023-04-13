@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Added workflow to publish
+
 ## 0.0.3
 
 * Added support for MIR brand
