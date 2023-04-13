@@ -12,6 +12,6 @@ jobs:
         uses: actions/checkout@v1
         
       - name: 'Flutter pub publish'
-        uses: k-paxian/dart-package-publisher@master
+        uses: k-paxian/dart-package-publisher@v1.5.1
         with:
           credentialJson: ${{ secrets.DART_CREDENTIAL }}
