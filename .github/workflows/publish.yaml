@@ -5,17 +5,13 @@ on:
     types: [created]
 
 jobs:
-  publish:
-
+  publishing:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: 'Checkout'
         uses: actions/checkout@v1
-      - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.3.1
+        
+      - name: 'Flutter pub publish'
+        uses: k-paxian/dart-package-publisher@master
         with:
-          credential: ${{ secrets.DART_CREDENTIAL }}
-          flutter_package: true
-          skip_test: true
-          dry_run: false
+          credentialJson: ${{ secrets.DART_CREDENTIAL }}
