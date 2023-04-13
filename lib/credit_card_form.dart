@@ -16,6 +16,7 @@ enum CardType {
   dinersClub,
   jcb,
   others,
+  mir,
   invalid
 }
 

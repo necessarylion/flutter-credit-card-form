@@ -81,6 +81,10 @@ class CardUtils {
         img = 'brand_jcb.png';
         imgWidth = 40.0;
         break;
+      case CardType.mir:
+        img = 'brand_mir.png';
+        imgWidth = 50.0;
+        break;
       case CardType.others:
         img = 'credit_card.png';
         break;
@@ -106,6 +110,8 @@ class CardUtils {
       cardType = CardType.dinersClub;
     } else if (input.startsWith(RegExp(r'(352[89]|35[3-8][0-9])'))) {
       cardType = CardType.jcb;
+    } else if (input.startsWith(RegExp(r'(220[0-4])'))) {
+      cardType = CardType.mir;
     } else if (input.length <= 8) {
       cardType = CardType.others;
     } else {
