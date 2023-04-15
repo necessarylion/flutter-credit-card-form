@@ -20,16 +20,36 @@ CreditCardForm(
 ),
 ```
 
-| Param                | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
+| Param                | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
 | `theme`              | card theme `CreditCardLightTheme()` or `CreditCardDarkTheme` |
-| `onChanged` required | listen for input values changed                             |
-| `cardNumberLabel`    | label for card number input                                 |
-| `cardHolderLabel`    | label for card holder name input                            |
-| `expiredDateLabel`   | label for expired date input                                |
-| `cvcLabel`           | label for security code                                     |
-| `cvcLength`          | length for security code. default (4)                       |
-| `fontSize`           | font size for all inputs and labels. default (16)             |
+| `onChanged` required | listen for input values changed                              |
+| `cardNumberLabel`    | label for card number input                                  |
+| `cardHolderLabel`    | label for card holder name input                             |
+| `expiredDateLabel`   | label for expired date input                                 |
+| `cvcLabel`           | label for security code                                      |
+| `cvcLength`          | length for security code. default (4)                        |
+| `fontSize`           | font size for all inputs and labels. default (16)            |
+| `controller`         | `CreditCardController()` to set initial value to inputs      |
+
+### Set Credit Card Value Initially
+
+```dart
+CreditCardController controller = CreditCardController();
+
+CreditCardForm(
+    controller: controller,
+    onChanged: (CreditCardResult result) {
+    },
+),
+
+controller.setValue(CreditCardValue(
+    cardNumber: '4242 4242 4242 4242',
+    cardHolderName: 'John Wick',
+    expiryDate: '08/25',
+));
+
+```
 
 ### How to create custom theme
 

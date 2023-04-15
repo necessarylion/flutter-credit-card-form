@@ -1,5 +1,6 @@
 library credit_card_form;
 
+import 'package:credit_card_form/text_input_widget.dart';
 import 'package:credit_card_form/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,15 @@ enum CardType {
   invalid
 }
 
+class CreditCardController extends ChangeNotifier {
+  CreditCardValue value = CreditCardValue();
+
+  void setValue(CreditCardValue initialValue) {
+    value = initialValue;
+    notifyListeners();
+  }
+}
+
 class CreditCardResult {
   final String cardNumber;
   final String cvc;
@@ -34,5 +44,16 @@ class CreditCardResult {
     required this.expirationMonth,
     required this.expirationYear,
     this.cardType,
+  });
+}
+
+class CreditCardValue {
+  String? cardNumber;
+  String? cardHolderName;
+  String? expiryDate;
+  CreditCardValue({
+    this.cardNumber,
+    this.cardHolderName,
+    this.expiryDate,
   });
 }

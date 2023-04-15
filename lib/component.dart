@@ -9,6 +9,7 @@ class CreditCardForm extends StatefulWidget {
   final CreditCardTheme? theme;
   final Function(CreditCardResult) onChanged;
   final int? cvcLength;
+  final CreditCardController? controller;
   const CreditCardForm({
     super.key,
     this.theme,
@@ -19,6 +20,7 @@ class CreditCardForm extends StatefulWidget {
     this.cvcLabel,
     this.fontSize = 16,
     this.cvcLength = 4,
+    this.controller,
   });
 
   @override
@@ -38,16 +40,16 @@ class _CreditCardFormState extends State<CreditCardForm> {
     "width": 30.0,
   };
 
-  String error = '';
-
-  CardType? cardType;
-
   Map<String, TextEditingController> controllers = {
     "card": TextEditingController(),
     "expired_date": TextEditingController(),
     "card_holder_name": TextEditingController(),
     "cvc": TextEditingController(),
   };
+
+  String error = '';
+
+  CardType? cardType;
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +67,11 @@ class _CreditCardFormState extends State<CreditCardForm> {
       ),
       child: Column(
         children: [
-          textInput(
+          TextInputWidget(
+            theme: theme,
+            fontSize: widget.fontSize,
             controller: controllers['card'],
             label: widget.cardNumberLabel ?? 'Card number',
-            key: 'card',
             bottom: 1,
             formatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -82,6 +85,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
               setState(() {
                 cardImg = img;
                 cardType = type;
+                params['card'] = val;
               });
               emitResult();
             },
@@ -94,12 +98,16 @@ class _CreditCardFormState extends State<CreditCardForm> {
               ),
             ),
           ),
-          textInput(
+          TextInputWidget(
+            theme: theme,
+            fontSize: widget.fontSize,
             label: widget.cardHolderLabel ?? 'Card holder name',
             controller: controllers['card_holder_name'],
-            key: 'card_holder_name',
             bottom: 1,
             onChanged: (val) {
+              setState(() {
+                params['card_holder_name'] = val;
+              });
               emitResult();
             },
             keyboardType: TextInputType.name,
@@ -107,24 +115,35 @@ class _CreditCardFormState extends State<CreditCardForm> {
           Row(
             children: [
               Expanded(
-                child: textInput(
+                child: TextInputWidget(
+                  theme: theme,
+                  fontSize: widget.fontSize,
                   label: widget.expiredDateLabel ?? 'MM/YY',
                   right: 1,
-                  key: 'expired_date',
                   onChanged: (val) {
+                    setState(() {
+                      params['expired_date'] = val;
+                    });
                     emitResult();
                   },
                   controller: controllers['expired_date'],
-                  formatters: [CardExpirationFormatter()],
+                  formatters: [
+                    CardExpirationFormatter(),
+                    LengthLimitingTextInputFormatter(5)
+                  ],
                 ),
               ),
               Expanded(
-                child: textInput(
+                child: TextInputWidget(
+                  theme: theme,
+                  fontSize: widget.fontSize,
                   label: widget.cvcLabel ?? 'CVC',
-                  key: 'cvc',
                   controller: controllers['cvc'],
                   password: true,
                   onChanged: (val) {
+                    setState(() {
+                      params['cvc'] = val;
+                    });
                     emitResult();
                   },
                   formatters: [
@@ -167,70 +186,47 @@ class _CreditCardFormState extends State<CreditCardForm> {
     widget.onChanged(result);
   }
 
-  Widget textInput({
-    required String label,
-    required String key,
-    double left = 0,
-    double right = 0,
-    double bottom = 0,
-    double top = 0,
-    List<TextInputFormatter>? formatters,
-    TextInputType? keyboardType,
-    bool? password,
-    Function(String)? onChanged,
-    Widget? suffixIcon,
-    TextEditingController? controller,
-  }) {
-    CreditCardTheme theme = widget.theme ?? CreditCardLightTheme();
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            color: left > 0 ? theme.borderColor : Colors.transparent,
-            width: left,
-          ),
-          right: BorderSide(
-            color: right > 0 ? theme.borderColor : Colors.transparent,
-            width: right,
-          ),
-          top: BorderSide(
-            color: top > 0 ? theme.borderColor : Colors.transparent,
-            width: top,
-          ),
-          bottom: BorderSide(
-            color: bottom > 0 ? theme.borderColor : Colors.transparent,
-            width: bottom,
-          ),
-        ),
-      ),
-      child: TextField(
-        controller: controller,
-        style: TextStyle(
-          color: theme.textColor,
-          fontSize: widget.fontSize,
-        ),
-        onChanged: (value) {
-          setState(() {
-            params[key] = value;
-          });
-          if (onChanged != null) {
-            onChanged(value);
-          }
-        },
-        obscureText: password ?? false,
-        inputFormatters: formatters ?? [],
-        keyboardType: keyboardType ?? TextInputType.number,
-        decoration: InputDecoration(
-          suffixIcon: suffixIcon,
-          contentPadding: const EdgeInsets.all(15),
-          border: InputBorder.none,
-          hintText: label,
-          hintStyle: TextStyle(
-            color: theme.labelColor,
-            fontSize: widget.fontSize,
-          ),
-        ),
-      ),
-    );
+  handleController() {
+    if (widget.controller != null) {
+      widget.controller?.addListener(() {
+        CreditCardValue? initialValue = widget.controller?.value;
+        if (initialValue?.cardNumber != null) {
+          TextEditingValue cardNumber =
+              FilteringTextInputFormatter.digitsOnly.formatEditUpdate(
+            const TextEditingValue(text: ''),
+            TextEditingValue(text: initialValue!.cardNumber.toString()),
+          );
+
+          cardNumber = LengthLimitingTextInputFormatter(19).formatEditUpdate(
+            const TextEditingValue(text: ''),
+            TextEditingValue(text: cardNumber.text),
+          );
+
+          cardNumber = CardNumberInputFormatter().formatEditUpdate(
+            const TextEditingValue(text: ''),
+            TextEditingValue(text: cardNumber.text),
+          );
+
+          controllers['card']?.value = cardNumber;
+        }
+        if (initialValue?.cardHolderName != null) {
+          controllers['card_holder_name']?.text =
+              initialValue!.cardHolderName.toString();
+        }
+        if (initialValue?.expiryDate != null) {
+          controllers['expired_date']?.value =
+              CardExpirationFormatter().formatEditUpdate(
+            const TextEditingValue(text: ''),
+            TextEditingValue(text: initialValue!.expiryDate.toString()),
+          );
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    handleController();
+    super.initState();
   }
 }
