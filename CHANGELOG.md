@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Added support for controller to set input value initially
+* Refactor `TextInputWidget` Component
+
 ## 0.0.4
 
 * Added workflow to publish
