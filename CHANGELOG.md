@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Added support to hide card holder name input
+
 ## 0.0.5
 
 * Added support for controller to set input value initially

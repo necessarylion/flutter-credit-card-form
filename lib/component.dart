@@ -3,12 +3,14 @@ part of credit_card_form;
 class CreditCardForm extends StatefulWidget {
   final String? cardNumberLabel;
   final String? cardHolderLabel;
+  final bool? hideCardHolder;
   final String? expiredDateLabel;
   final String? cvcLabel;
+  final Widget? cvcIcon;
+  final int? cvcLength;
   final double fontSize;
   final CreditCardTheme? theme;
   final Function(CreditCardResult) onChanged;
-  final int? cvcLength;
   final CreditCardController? controller;
   const CreditCardForm({
     super.key,
@@ -16,10 +18,12 @@ class CreditCardForm extends StatefulWidget {
     required this.onChanged,
     this.cardNumberLabel,
     this.cardHolderLabel,
+    this.hideCardHolder = false,
     this.expiredDateLabel,
     this.cvcLabel,
-    this.fontSize = 16,
+    this.cvcIcon,
     this.cvcLength = 4,
+    this.fontSize = 16,
     this.controller,
   });
 
@@ -50,6 +54,18 @@ class _CreditCardFormState extends State<CreditCardForm> {
   String error = '';
 
   CardType? cardType;
+
+  @override
+  void dispose() {
+    controllers.forEach((key, value) => value.dispose());
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    handleController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,20 +114,21 @@ class _CreditCardFormState extends State<CreditCardForm> {
               ),
             ),
           ),
-          TextInputWidget(
-            theme: theme,
-            fontSize: widget.fontSize,
-            label: widget.cardHolderLabel ?? 'Card holder name',
-            controller: controllers['card_holder_name'],
-            bottom: 1,
-            onChanged: (val) {
-              setState(() {
-                params['card_holder_name'] = val;
-              });
-              emitResult();
-            },
-            keyboardType: TextInputType.name,
-          ),
+          if (widget.hideCardHolder == false)
+            TextInputWidget(
+              theme: theme,
+              fontSize: widget.fontSize,
+              label: widget.cardHolderLabel ?? 'Card holder name',
+              controller: controllers['card_holder_name'],
+              bottom: 1,
+              onChanged: (val) {
+                setState(() {
+                  params['card_holder_name'] = val;
+                });
+                emitResult();
+              },
+              keyboardType: TextInputType.name,
+            ),
           Row(
             children: [
               Expanded(
@@ -152,11 +169,12 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   ],
                   suffixIcon: Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Image.asset(
-                      'images/cvc.png',
-                      package: 'credit_card_form',
-                      height: 25,
-                    ),
+                    child: widget.cvcIcon ??
+                        Image.asset(
+                          'images/cvc.png',
+                          package: 'credit_card_form',
+                          height: 25,
+                        ),
                   ),
                 ),
               )
@@ -165,12 +183,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    controllers.forEach((key, value) => value.dispose());
-    super.dispose();
   }
 
   emitResult() {
@@ -222,11 +234,5 @@ class _CreditCardFormState extends State<CreditCardForm> {
         }
       });
     }
-  }
-
-  @override
-  void initState() {
-    handleController();
-    super.initState();
   }
 }
