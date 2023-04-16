@@ -26,9 +26,11 @@ CreditCardForm(
 | `onChanged` required | listen for input values changed                              |
 | `cardNumberLabel`    | label for card number input                                  |
 | `cardHolderLabel`    | label for card holder name input                             |
+| `hideCardHolder`     | default (false)                                              |
 | `expiredDateLabel`   | label for expired date input                                 |
 | `cvcLabel`           | label for security code                                      |
 | `cvcLength`          | length for security code. default (4)                        |
+| `cvcIcon`            | Icon widget for security code.                               |
 | `fontSize`           | font size for all inputs and labels. default (16)            |
 | `controller`         | `CreditCardController()` to set initial value to inputs      |
 
