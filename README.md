@@ -29,6 +29,7 @@ CreditCardForm(
 | `hideCardHolder`     | default (false)                                              |
 | `expiredDateLabel`   | label for expired date input                                 |
 | `cvcLabel`           | label for security code                                      |
+| `cardNumberLength`   | length for card number. default (16)                         |
 | `cvcLength`          | length for security code. default (4)                        |
 | `cvcIcon`            | Icon widget for security code.                               |
 | `fontSize`           | font size for all inputs and labels. default (16)            |

@@ -7,6 +7,7 @@ class CreditCardForm extends StatefulWidget {
   final String? expiredDateLabel;
   final String? cvcLabel;
   final Widget? cvcIcon;
+  final int? cardNumberLength;
   final int? cvcLength;
   final double fontSize;
   final CreditCardTheme? theme;
@@ -22,6 +23,7 @@ class CreditCardForm extends StatefulWidget {
     this.expiredDateLabel,
     this.cvcLabel,
     this.cvcIcon,
+    this.cardNumberLength = 16,
     this.cvcLength = 4,
     this.fontSize = 16,
     this.controller,
@@ -91,7 +93,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
             bottom: 1,
             formatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(19),
+              LengthLimitingTextInputFormatter(widget.cardNumberLength),
               CardNumberInputFormatter(),
             ],
             onChanged: (val) {
