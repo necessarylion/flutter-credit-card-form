@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Added support for credit card length default to 16
+
 ## 0.0.6
 
 * Added support to hide card holder name input
