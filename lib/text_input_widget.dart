@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class TextInputWidget extends StatelessWidget {
   final String label;
 
+  final List<String>? autofillHint;
   final CreditCardTheme theme;
   final double left;
   final double right;
@@ -24,6 +25,7 @@ class TextInputWidget extends StatelessWidget {
     required this.theme,
     required this.fontSize,
     required this.onChanged,
+    this.autofillHint,
     this.formatters,
     this.keyboardType,
     this.password,
@@ -68,6 +70,7 @@ class TextInputWidget extends StatelessWidget {
         obscureText: password ?? false,
         inputFormatters: formatters ?? [],
         keyboardType: keyboardType ?? TextInputType.number,
+        autofillHints: autofillHint?.toList(),
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
           contentPadding: const EdgeInsets.all(15),

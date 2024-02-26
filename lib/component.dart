@@ -13,6 +13,7 @@ class CreditCardForm extends StatefulWidget {
   final CreditCardTheme? theme;
   final Function(CreditCardResult) onChanged;
   final CreditCardController? controller;
+  final double? spaceBetween;
   const CreditCardForm({
     super.key,
     this.theme,
@@ -27,6 +28,7 @@ class CreditCardForm extends StatefulWidget {
     this.cvcLength = 4,
     this.fontSize = 16,
     this.controller,
+    this.spaceBetween = 10,
   });
 
   @override
@@ -83,106 +85,124 @@ class _CreditCardFormState extends State<CreditCardForm> {
           bottomRight: Radius.circular(10),
         ),
       ),
-      child: Column(
-        children: [
-          TextInputWidget(
-            theme: theme,
-            fontSize: widget.fontSize,
-            controller: controllers['card'],
-            label: widget.cardNumberLabel ?? 'Card number',
-            bottom: 1,
-            formatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(widget.cardNumberLength),
-              CardNumberInputFormatter(),
-            ],
-            onChanged: (val) {
-              Map img = CardUtils.getCardIcon(val);
-              CardType type =
-                  CardUtils.getCardTypeFrmNumber(val.replaceAll(' ', ''));
-              setState(() {
-                cardImg = img;
-                cardType = type;
-                params['card'] = val;
-              });
-              emitResult();
-            },
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Image.asset(
-                'images/${cardImg['img']}',
-                package: 'credit_card_form',
-                width: cardImg['width'] as double?,
-              ),
-            ),
-          ),
-          if (widget.hideCardHolder == false)
+      child: AutofillGroup(
+        child: Column(
+          children: [
             TextInputWidget(
               theme: theme,
               fontSize: widget.fontSize,
-              label: widget.cardHolderLabel ?? 'Card holder name',
-              controller: controllers['card_holder_name'],
+              controller: controllers['card'],
+              label: widget.cardNumberLabel ?? 'Card number',
               bottom: 1,
+              autofillHint: const [AutofillHints.creditCardNumber],
+              formatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(widget.cardNumberLength),
+                CardNumberInputFormatter(),
+              ],
               onChanged: (val) {
+                Map img = CardUtils.getCardIcon(val);
+                CardType type =
+                    CardUtils.getCardTypeFrmNumber(val.replaceAll(' ', ''));
                 setState(() {
-                  params['card_holder_name'] = val;
+                  cardImg = img;
+                  cardType = type;
+                  params['card'] = val;
                 });
                 emitResult();
               },
-              keyboardType: TextInputType.name,
-            ),
-          Row(
-            children: [
-              Expanded(
-                child: TextInputWidget(
-                  theme: theme,
-                  fontSize: widget.fontSize,
-                  label: widget.expiredDateLabel ?? 'MM/YY',
-                  right: 1,
-                  onChanged: (val) {
-                    setState(() {
-                      params['expired_date'] = val;
-                    });
-                    emitResult();
-                  },
-                  controller: controllers['expired_date'],
-                  formatters: [
-                    CardExpirationFormatter(),
-                    LengthLimitingTextInputFormatter(5)
-                  ],
+              suffixIcon: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  'images/${cardImg['img']}',
+                  package: 'credit_card_form',
+                  width: cardImg['width'] as double?,
                 ),
               ),
-              Expanded(
-                child: TextInputWidget(
-                  theme: theme,
-                  fontSize: widget.fontSize,
-                  label: widget.cvcLabel ?? 'CVC',
-                  controller: controllers['cvc'],
-                  password: true,
-                  onChanged: (val) {
-                    setState(() {
-                      params['cvc'] = val;
-                    });
-                    emitResult();
-                  },
-                  formatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(widget.cvcLength)
-                  ],
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: widget.cvcIcon ??
-                        Image.asset(
-                          'images/cvc.png',
-                          package: 'credit_card_form',
-                          height: 25,
-                        ),
+            ),
+            SizedBox(
+              height: widget.spaceBetween,
+            ),
+            if (widget.hideCardHolder == false) ...[
+              TextInputWidget(
+                theme: theme,
+                fontSize: widget.fontSize,
+                label: widget.cardHolderLabel ?? 'Card holder name',
+                controller: controllers['card_holder_name'],
+                autofillHint: const [AutofillHints.creditCardName],
+                bottom: 1,
+                onChanged: (val) {
+                  setState(() {
+                    params['card_holder_name'] = val;
+                  });
+                  emitResult();
+                },
+                keyboardType: TextInputType.name,
+              ),
+              SizedBox(
+                height: widget.spaceBetween,
+              ),
+            ],
+            Row(
+              children: [
+                Expanded(
+                  child: TextInputWidget(
+                    theme: theme,
+                    fontSize: widget.fontSize,
+                    label: widget.expiredDateLabel ?? 'MM/YY',
+                    right: 1,
+                    onChanged: (val) {
+                      setState(() {
+                        params['expired_date'] = val;
+                      });
+                      emitResult();
+                    },
+                    controller: controllers['expired_date'],
+                    autofillHint: const [
+                      AutofillHints.creditCardExpirationDate
+                    ],
+                    formatters: [
+                      CardExpirationFormatter(),
+                      LengthLimitingTextInputFormatter(5)
+                    ],
                   ),
                 ),
-              )
-            ],
-          )
-        ],
+                SizedBox(
+                  width: widget.spaceBetween,
+                ),
+                Expanded(
+                  child: TextInputWidget(
+                    theme: theme,
+                    fontSize: widget.fontSize,
+                    label: widget.cvcLabel ?? 'CVC',
+                    controller: controllers['cvc'],
+                    password: true,
+                    onChanged: (val) {
+                      setState(() {
+                        params['cvc'] = val;
+                      });
+                      emitResult();
+                    },
+                    autofillHint: const [AutofillHints.creditCardSecurityCode],
+                    formatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(widget.cvcLength)
+                    ],
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: widget.cvcIcon ??
+                          Image.asset(
+                            'images/cvc.png',
+                            package: 'credit_card_form',
+                            height: 25,
+                          ),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

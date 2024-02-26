@@ -51,9 +51,11 @@ class CreditCardValue {
   String? cardNumber;
   String? cardHolderName;
   String? expiryDate;
+  String? cvc;
   CreditCardValue({
     this.cardNumber,
     this.cardHolderName,
     this.expiryDate,
+    this.cvc,
   });
 }
