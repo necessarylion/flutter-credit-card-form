@@ -1,8 +1,8 @@
 library credit_card_form;
 
+import 'package:card_scanner/card_scanner.dart';
 import 'package:credit_card_form/text_input_widget.dart';
 import 'package:credit_card_form/utils.dart';
-import 'package:credit_card_scanner/credit_card_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

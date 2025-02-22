@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  credit_card_scanner:
+  card_scanner:
 
 dev_dependencies:
   flutter_test:

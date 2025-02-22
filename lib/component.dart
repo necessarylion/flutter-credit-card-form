@@ -200,12 +200,18 @@ class _CreditCardFormState extends State<CreditCardForm> {
           ),
         );
         if (cardDetails != null) {
+          var mm = cardDetails.expiryDate.isNotEmpty
+              ? cardDetails.expiryDate.split('/')[0]
+              : '';
+          var yy = cardDetails.expiryDate.isNotEmpty
+              ? cardDetails.expiryDate.split('/')[1]
+              : '';
           CreditCardResult result = CreditCardResult(
             cardNumber: cardDetails.cardNumber,
             cvc: '',
             cardHolderName: cardDetails.cardHolderName,
-            expirationMonth: cardDetails.expiryDate.split('/')[0],
-            expirationYear: cardDetails.expiryDate.split('/')[1],
+            expirationMonth: mm,
+            expirationYear: yy,
             cardType: CardUtils.getCardTypeFrmNumber(
                 cardDetails.cardNumber.replaceAll(' ', '')),
           );
