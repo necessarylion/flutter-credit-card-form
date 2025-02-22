@@ -4,6 +4,8 @@ class CreditCardForm extends StatefulWidget {
   final String? cardNumberLabel;
   final String? cardHolderLabel;
   final bool? hideCardHolder;
+  final bool? enableScanner;
+  final Widget? scannerIcon;
   final String? expiredDateLabel;
   final String? cvcLabel;
   final Widget? cvcIcon;
@@ -20,6 +22,8 @@ class CreditCardForm extends StatefulWidget {
     this.cardNumberLabel,
     this.cardHolderLabel,
     this.hideCardHolder = false,
+    this.enableScanner = false,
+    this.scannerIcon,
     this.expiredDateLabel,
     this.cvcLabel,
     this.cvcIcon,
@@ -83,107 +87,147 @@ class _CreditCardFormState extends State<CreditCardForm> {
           bottomRight: Radius.circular(10),
         ),
       ),
-      child: Column(
-        children: [
+      child: Column(children: [
+        TextInputWidget(
+          theme: theme,
+          fontSize: widget.fontSize,
+          controller: controllers['card'],
+          label: widget.cardNumberLabel ?? 'Card number',
+          bottom: 1,
+          formatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(widget.cardNumberLength),
+            CardNumberInputFormatter(),
+          ],
+          onChanged: (val) {
+            Map img = CardUtils.getCardIcon(val);
+            CardType? type =
+                CardUtils.getCardTypeFrmNumber(val.replaceAll(' ', ''));
+            setState(() {
+              cardImg = img;
+              cardType = type;
+              params['card'] = val;
+            });
+            emitResult();
+          },
+          suffixIcon: Padding(
+            padding: const EdgeInsets.all(8),
+            child: widget.enableScanner == true && cardType == null
+                ? creditCardScanner()
+                : Image.asset(
+                    'images/${cardImg['img']}',
+                    package: 'credit_card_form',
+                    width: cardImg['width'] as double?,
+                  ),
+          ),
+        ),
+        if (widget.hideCardHolder == false)
           TextInputWidget(
             theme: theme,
             fontSize: widget.fontSize,
-            controller: controllers['card'],
-            label: widget.cardNumberLabel ?? 'Card number',
+            label: widget.cardHolderLabel ?? 'Card holder name',
+            controller: controllers['card_holder_name'],
             bottom: 1,
-            formatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(widget.cardNumberLength),
-              CardNumberInputFormatter(),
-            ],
             onChanged: (val) {
-              Map img = CardUtils.getCardIcon(val);
-              CardType type =
-                  CardUtils.getCardTypeFrmNumber(val.replaceAll(' ', ''));
               setState(() {
-                cardImg = img;
-                cardType = type;
-                params['card'] = val;
+                params['card_holder_name'] = val;
               });
               emitResult();
             },
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Image.asset(
-                'images/${cardImg['img']}',
-                package: 'credit_card_form',
-                width: cardImg['width'] as double?,
-              ),
-            ),
+            keyboardType: TextInputType.name,
           ),
-          if (widget.hideCardHolder == false)
-            TextInputWidget(
-              theme: theme,
-              fontSize: widget.fontSize,
-              label: widget.cardHolderLabel ?? 'Card holder name',
-              controller: controllers['card_holder_name'],
-              bottom: 1,
-              onChanged: (val) {
-                setState(() {
-                  params['card_holder_name'] = val;
-                });
-                emitResult();
-              },
-              keyboardType: TextInputType.name,
+        Row(
+          children: [
+            Expanded(
+              child: TextInputWidget(
+                theme: theme,
+                fontSize: widget.fontSize,
+                label: widget.expiredDateLabel ?? 'MM/YY',
+                right: 1,
+                onChanged: (val) {
+                  setState(() {
+                    params['expired_date'] = val;
+                  });
+                  emitResult();
+                },
+                controller: controllers['expired_date'],
+                formatters: [
+                  CardExpirationFormatter(),
+                  LengthLimitingTextInputFormatter(5)
+                ],
+              ),
             ),
-          Row(
-            children: [
-              Expanded(
-                child: TextInputWidget(
-                  theme: theme,
-                  fontSize: widget.fontSize,
-                  label: widget.expiredDateLabel ?? 'MM/YY',
-                  right: 1,
-                  onChanged: (val) {
-                    setState(() {
-                      params['expired_date'] = val;
-                    });
-                    emitResult();
-                  },
-                  controller: controllers['expired_date'],
-                  formatters: [
-                    CardExpirationFormatter(),
-                    LengthLimitingTextInputFormatter(5)
-                  ],
+            Expanded(
+              child: TextInputWidget(
+                theme: theme,
+                fontSize: widget.fontSize,
+                label: widget.cvcLabel ?? 'CVC',
+                controller: controllers['cvc'],
+                password: true,
+                onChanged: (val) {
+                  setState(() {
+                    params['cvc'] = val;
+                  });
+                  emitResult();
+                },
+                formatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(widget.cvcLength)
+                ],
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: widget.cvcIcon ??
+                      Image.asset(
+                        'images/cvc.png',
+                        package: 'credit_card_form',
+                        height: 25,
+                      ),
                 ),
               ),
-              Expanded(
-                child: TextInputWidget(
-                  theme: theme,
-                  fontSize: widget.fontSize,
-                  label: widget.cvcLabel ?? 'CVC',
-                  controller: controllers['cvc'],
-                  password: true,
-                  onChanged: (val) {
-                    setState(() {
-                      params['cvc'] = val;
-                    });
-                    emitResult();
-                  },
-                  formatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(widget.cvcLength)
-                  ],
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: widget.cvcIcon ??
-                        Image.asset(
-                          'images/cvc.png',
-                          package: 'credit_card_form',
-                          height: 25,
-                        ),
-                  ),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
+            )
+          ],
+        ),
+      ]),
+    );
+  }
+
+  creditCardScanner() {
+    return GestureDetector(
+      onTap: () async {
+        var cardDetails = await CardScanner.scanCard(
+          scanOptions: const CardScanOptions(
+            enableLuhnCheck: true,
+          ),
+        );
+        if (cardDetails != null) {
+          CreditCardResult result = CreditCardResult(
+            cardNumber: cardDetails.cardNumber,
+            cvc: '',
+            cardHolderName: cardDetails.cardHolderName,
+            expirationMonth: cardDetails.expiryDate.split('/')[0],
+            expirationYear: cardDetails.expiryDate.split('/')[1],
+            cardType: CardUtils.getCardTypeFrmNumber(
+                cardDetails.cardNumber.replaceAll(' ', '')),
+          );
+          widget.controller?.setValue(CreditCardValue(
+            cardNumber: cardDetails.cardNumber,
+            cardHolderName: cardDetails.cardHolderName,
+            expiryDate: cardDetails.expiryDate,
+          ));
+          setState(() {
+            cardImg = CardUtils.getCardIcon(cardDetails.cardNumber);
+            cardType = result.cardType;
+            params['card'] = cardDetails.cardNumber;
+          });
+          widget.onChanged(result);
+        }
+      },
+      child: widget.scannerIcon ??
+          Image.asset(
+            'images/scanner.png',
+            package: 'credit_card_form',
+            width: cardImg['width'] as double?,
+          ),
     );
   }
 
