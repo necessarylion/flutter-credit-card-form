@@ -60,13 +60,12 @@ Note: For more information about enabling scanner, please refer to [Card Scanner
 ```dart
 CardDataInputController controller = CardDataInputController();
 
-controller.set(CardData(
-    cardNumber: '4242424242424242abcd',
+controller.set = CardData(
+    cardNumber: '4242424242424242',
     cardHolderName: 'Zin Kyaw Kyaw',
     expiredDate: '11/23',
     cvc: '123',
-));
-
+);
 ```
 
 ## How to create custom theme
