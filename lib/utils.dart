@@ -51,8 +51,8 @@ class CardNumberInputFormatter extends TextInputFormatter {
 }
 
 class CardUtils {
-  static Map getCardIcon(input) {
-    CardType cardType =
+  static CardImage getCardIcon(String input) {
+    CardType? cardType =
         CardUtils.getCardTypeFrmNumber(input.replaceAll(' ', ''));
     String img = "";
     double imgWidth = 30.0;
@@ -85,6 +85,10 @@ class CardUtils {
         img = 'brand_mir.png';
         imgWidth = 50.0;
         break;
+      case CardType.unionPay:
+        img = 'unionpay.png';
+        imgWidth = 50.0;
+        break;
       case CardType.others:
         img = 'credit_card.png';
         break;
@@ -92,11 +96,14 @@ class CardUtils {
         img = 'credit_card.png';
         break;
     }
-    return {"img": img, "width": imgWidth};
+    return CardImage(img: img, width: imgWidth);
   }
 
-  static CardType getCardTypeFrmNumber(String input) {
-    CardType cardType;
+  static CardType? getCardTypeFrmNumber(String input) {
+    if (input.isEmpty) {
+      return null;
+    }
+    CardType? cardType;
     if (input.startsWith(RegExp(
         r'((5[1-5])|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720))'))) {
       cardType = CardType.master;
@@ -112,6 +119,8 @@ class CardUtils {
       cardType = CardType.jcb;
     } else if (input.startsWith(RegExp(r'(220[0-4])'))) {
       cardType = CardType.mir;
+    } else if (input.startsWith(RegExp(r'(62|81)'))) {
+      cardType = CardType.unionPay;
     } else if (input.length <= 8) {
       cardType = CardType.others;
     } else {
@@ -132,3 +141,5 @@ class HexColor extends Color {
     return int.parse(hexColor, radix: 16);
   }
 }
+
+void noop(_) => {};

@@ -1,21 +1,37 @@
 # Flutter Credit/Debit Card Form
 
-### Preview
+## Features
+
+- [x] Scan card with camera
+- [x] Set value programmatically
+- [x] Create a custom theme
+- [x] Listen for input value changes
+- [x] Show card type icon
+
+## Preview
 
 <img height="500" src="https://raw.githubusercontent.com/necessarylion/flutter-credit-card-form/master/preview-dark.png" /> <img height="500" src="https://raw.githubusercontent.com/necessarylion/flutter-credit-card-form/master/preview-light.png" />
 
-### Usage
+## Usage
 
 ```dart
+import 'package:credit_card_form/credit_card_form.dart';
+
+...
+
+CardDataInputController controller = CardDataInputController();
+
 CreditCardForm(
     theme: CreditCardLightTheme(),
-    onChanged: (CreditCardResult result) {
-        print(result.cardNumber);
-        print(result.cardHolderName);
-        print(result.expirationMonth);
-        print(result.expirationYear);
-        print(result.cardType);
-        print(result.cvc);
+    controller: controller,
+    onChanged: (CardData data) {
+        print(data.cardNumber);
+        print(data.cardHolderName);
+        print(data.expiredDate);
+        print(data.expiredMonth);
+        print(data.expiredYear);
+        print(data.cardType);
+        print(data.cvc);
     },
 ),
 ```
@@ -23,7 +39,7 @@ CreditCardForm(
 | Param                | Description                                                  |
 | -------------------- | ------------------------------------------------------------ |
 | `theme`              | card theme `CreditCardLightTheme()` or `CreditCardDarkTheme` |
-| `onChanged` required | listen for input values changed                              |
+| `onChanged`(required)| listen for input values changed                              |
 | `cardNumberLabel`    | label for card number input                                  |
 | `cardHolderLabel`    | label for card holder name input                             |
 | `hideCardHolder`     | default (false)                                              |
@@ -33,28 +49,26 @@ CreditCardForm(
 | `cvcLength`          | length for security code. default (4)                        |
 | `cvcIcon`            | Icon widget for security code.                               |
 | `fontSize`           | font size for all inputs and labels. default (16)            |
-| `controller`         | `CreditCardController()` to set initial value to inputs      |
+| `controller`         | `CardDataInputController()`                                  |
+| `enableScanner`      | default (false), If set to true, please ensure you have granted camera permission in android and ios|
+| `scannerIcon`        | Icon widget for scanner button.                              |
 
-### Set Credit Card Value Initially
+Note: For more information about enabling scanner, please refer to the [Card Scanner Package](https://pub.dev/packages/card_scanner)
+
+## Set Credit Card Value Programmatically
 
 ```dart
-CreditCardController controller = CreditCardController();
+CardDataInputController controller = CardDataInputController();
 
-CreditCardForm(
-    controller: controller,
-    onChanged: (CreditCardResult result) {
-    },
-),
-
-controller.setValue(CreditCardValue(
-    cardNumber: '4242 4242 4242 4242',
-    cardHolderName: 'John Wick',
-    expiryDate: '08/25',
-));
-
+controller.value = CardData(
+    cardNumber: '4242424242424242',
+    cardHolderName: 'Zin Kyaw Kyaw',
+    expiredDate: '11/23',
+    cvc: '123',
+);
 ```
 
-### How to create custom theme
+## How to create custom theme
 
 ```dart
 class CustomCardTheme implements CreditCardTheme {
@@ -70,10 +84,11 @@ class CustomCardTheme implements CreditCardTheme {
 
 CreditCardForm(
     theme: CustomCardTheme(),
-    onChanged: (CreditCardResult result) {
+    onChanged: (CardData data) {
     },
 ),
 ```
 
-### Development
+## Development
+
 Want to contribute? Great! Fork the repo and create PR to us.

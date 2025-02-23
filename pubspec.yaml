@@ -1,15 +1,16 @@
 name: credit_card_form
 description: Flutter Credit/Debit Card Form.
-version: 0.0.7
+version: 1.0.0
 homepage: https://github.com/necessarylion/flutter-credit-card-form
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=2.18.2 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  card_scanner:
 
 dev_dependencies:
   flutter_test:
