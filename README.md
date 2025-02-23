@@ -31,7 +31,7 @@ CreditCardForm(
         print(data.expiredMonth);
         print(data.expiredYear);
         print(data.cardType);
-        print(result.cvc);
+        print(data.cvc);
     },
 ),
 ```

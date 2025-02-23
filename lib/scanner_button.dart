@@ -28,11 +28,11 @@ class ScannerButton extends StatelessWidget {
           ),
     );
     if (cardDetails != null) {
-      controller.set(CardData(
+      controller.value = CardData(
         cardNumber: cardDetails.cardNumber,
         cardHolderName: cardDetails.cardHolderName,
         expiredDate: cardDetails.expiryDate,
-      ));
+      );
       onChanged(controller.value);
     }
   }

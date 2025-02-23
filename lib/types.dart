@@ -69,7 +69,7 @@ class CardDataInputController extends ChangeNotifier {
     cvc.dispose();
   }
 
-  void set(CardData data) {
+  set value(CardData data) {
     // format to text only
     TextEditingValue formattedCardNumber =
         FilteringTextInputFormatter.digitsOnly.formatEditUpdate(
@@ -104,7 +104,7 @@ class CardDataInputController extends ChangeNotifier {
     cvc.text = data.cvc;
   }
 
-  get value {
+  CardData get value {
     return CardData(
       cardNumber: cardNumber.text,
       expiredDate: expiredDate.text,
