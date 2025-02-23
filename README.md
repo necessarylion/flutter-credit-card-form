@@ -50,8 +50,10 @@ CreditCardForm(
 | `cvcIcon`            | Icon widget for security code.                               |
 | `fontSize`           | font size for all inputs and labels. default (16)            |
 | `controller`         | `CardDataInputController()`                                  |
-| `enableScanner`      | default (false)                                              |
+| `enableScanner`      | default (false), If set to true, please sure sure you have given camera permission in android and ios|
 | `scannerIcon`        | Icon widget for scanner button.                              |
+
+Note: For more information about enabling scanner, please refer to [Card Scanner Package](https://pub.dev/packages/card_scanner)
 
 ## Set Credit Card Value Programmatically
 
