@@ -4,8 +4,8 @@
 
 - [x] Scan card with camera
 - [x] Set value programmatically
-- [x] Create custom theme
-- [x] Listen for input values changed
+- [x] Create a custom theme
+- [x] Listen for input value changes
 - [x] Show card type icon
 
 ## Preview
@@ -50,17 +50,17 @@ CreditCardForm(
 | `cvcIcon`            | Icon widget for security code.                               |
 | `fontSize`           | font size for all inputs and labels. default (16)            |
 | `controller`         | `CardDataInputController()`                                  |
-| `enableScanner`      | default (false), If set to true, please sure sure you have given camera permission in android and ios|
+| `enableScanner`      | default (false), If set to true, please ensure you have granted camera permission in android and ios|
 | `scannerIcon`        | Icon widget for scanner button.                              |
 
-Note: For more information about enabling scanner, please refer to [Card Scanner Package](https://pub.dev/packages/card_scanner)
+Note: For more information about enabling scanner, please refer to the [Card Scanner Package](https://pub.dev/packages/card_scanner)
 
 ## Set Credit Card Value Programmatically
 
 ```dart
 CardDataInputController controller = CardDataInputController();
 
-controller.set = CardData(
+controller.value = CardData(
     cardNumber: '4242424242424242',
     cardHolderName: 'Zin Kyaw Kyaw',
     expiredDate: '11/23',
