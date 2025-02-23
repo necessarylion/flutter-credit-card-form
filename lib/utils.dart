@@ -51,7 +51,7 @@ class CardNumberInputFormatter extends TextInputFormatter {
 }
 
 class CardUtils {
-  static Map getCardIcon(input) {
+  static CardImage getCardIcon(String input) {
     CardType? cardType =
         CardUtils.getCardTypeFrmNumber(input.replaceAll(' ', ''));
     String img = "";
@@ -96,7 +96,7 @@ class CardUtils {
         img = 'credit_card.png';
         break;
     }
-    return {"img": img, "width": imgWidth};
+    return CardImage(img: img, width: imgWidth);
   }
 
   static CardType? getCardTypeFrmNumber(String input) {
@@ -141,3 +141,5 @@ class HexColor extends Color {
     return int.parse(hexColor, radix: 16);
   }
 }
+
+void noop(_) => {};
